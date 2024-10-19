@@ -36,27 +36,17 @@ if __name__ == "__main__":
     response = ollama.chat(model="llama3.1", messages=
         conversation
     )
-    conversation.append({"role": "assistant", "content": response})
-
-    conversation.append({"role": "user", "content": "what did i just say"})
-    print(Fore.GREEN + conversation)
-    print(Style.RESET_ALL)
-
-    wuh = ollama.chat(model="llama3.1", messages=
-        conversation
-    )
-
-    conversation.append({"role": "assistant", "content": wuh})
+    conversation.append({"role": "assistant", "content": response["message"]["content"]})
 
     print(Fore.GREEN + "ASSISTANT: \n" + response["message"]["content"] + "\n")
     print(Style.RESET_ALL)
 
-    # while(True):
-    #     print("USER: \n")
-    #     user_input = input("")
-    #     conversation.append({"role": "user", "content": user_input})
-    #     assistant_response = ollama.chat(model="llama3.1", messages=conversation)
-    #     conversation.append({"role": "assistant", "content": assistant_response})
-    #     print(Fore.GREEN + "ASSISTANT: \n" + assistant_response["message"]["content"] + "\n")
-    #     print(Style.RESET_ALL)
+    while(True):
+        print("USER: ")
+        user_input = input("")
+        conversation.append({"role": "user", "content": user_input})
+        response = ollama.chat(model="llama3.1", messages=conversation)
+        conversation.append({"role": "assistant", "content": response["message"]["content"]})
+        print(Fore.GREEN + "ASSISTANT: \n" + response["message"]["content"] + "\n")
+        print(Style.RESET_ALL)
 
