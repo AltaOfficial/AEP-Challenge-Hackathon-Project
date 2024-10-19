@@ -39,12 +39,14 @@ if __name__ == "__main__":
     conversation.append({"role": "assistant", "content": response})
 
     conversation.append({"role": "user", "content": "what did i just say"})
+    print(Fore.GREEN + conversation)
+    print(Style.RESET_ALL)
 
-    response = ollama.chat(model="llama3.1", messages=
+    wuh = ollama.chat(model="llama3.1", messages=
         conversation
     )
 
-    conversation.append({"role": "assistant", "content": response})
+    conversation.append({"role": "assistant", "content": wuh})
 
     print(Fore.GREEN + "ASSISTANT: \n" + response["message"]["content"] + "\n")
     print(Style.RESET_ALL)
