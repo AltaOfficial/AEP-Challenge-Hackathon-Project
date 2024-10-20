@@ -59,7 +59,7 @@ def analyze_comments(df, client, safety_info, guidelines, vocab, precursor):
 
 def get_top_comments(df, n=30):
     """Get the top n high-value comments."""
-    high_value_comments = df[df['importance'] == 'high-value'].sort_values('Date', ascending=False)
+    high_value_comments = df[df['importance'] == 'high-value'].sort_values('Obs Number', ascending=False)
     return high_value_comments.head(n)
 
 
@@ -85,7 +85,7 @@ if __name__ == "__main__":
 
     print(f"Top {len(top_comments)} high-value comments:")
     for _, row in top_comments.iterrows():
-        print(f"Date: {row['DATETIME_DTM']}, Type: {row['QUALIFIER_TXT']}")
+        print(f"Obs Number: {row['OBSRVTN_NB']}, Type: {row['PNT_NM']}")
         print(f"Comment: {row['PNT_ATRISKNOTES_TX']}")
         print(f"Explanation: {row['explanation']}")
         print("-" * 50)

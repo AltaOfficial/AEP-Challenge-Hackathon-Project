@@ -39,7 +39,7 @@ def main():
             top_comments = restart_cont.get_top_comments(analyzed_df)
             st.subheader(f"Top {len(top_comments)} High-Value Comments:")
             for _, row in top_comments.iterrows():
-                with st.expander(f"Date: {row['DATETIME_DTM']} - {row['OBSRVTN_NB']}"):
+                with st.expander(f"Obs Number: {row['OBSRVTN_NB']} - {row['PNT_NM']}"):
                     st.write(f"Comment: {row['PNT_ATRISKNOTES_TX']}")
                     st.write(f"Explanation: {row['explanation']}")
 
