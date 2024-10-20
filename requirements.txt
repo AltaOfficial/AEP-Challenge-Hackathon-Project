@@ -5,5 +5,5 @@ tk
 colorama
 PyPDF2
 keras
-transformers
-torch
+tqdm
+streamlit

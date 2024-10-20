@@ -1,51 +1,55 @@
-import aep_ai, torch
-from transformers import AutoTokenizer, AutoModelForCausalLM, TrainingArguments, Trainer
+import tensorflow as tf
+from transformers import TFAutoModelForCausalLM, AutoTokenizer
+from datasets import Dataset
 
 
-def finetune_llama(train_data, val_data):
+def finetune_llama_tf(train_data, val_data):
+    """Fine-tune the LLaMA 3.2 model on the safety comment data using TensorFlow."""
     # Load pre-trained LLaMA 3.2 model and tokenizer
-    model_name = "/llama3.2"  # Adjust as needed for LLaMA 3.2
+    model_name = "meta-llama/Llama-2-7b-hf"  # Adjust as needed for LLaMA 3.2
     tokenizer = AutoTokenizer.from_pretrained(model_name)
-    model = AutoModelForCausalLM.from_pretrained(model_name)
+    model = TFAutoModelForCausalLM.from_pretrained(model_name)
 
     # Tokenize the data
     def tokenize_function(examples):
         return tokenizer(examples["input"], truncation=True, padding="max_length", max_length=512)
 
-    tokenized_train = tokenize_function(train_data)
-    tokenized_val = tokenize_function(val_data)
+    train_dataset = Dataset.from_dict({"input": [item["input"] for item in train_data]})
+    val_dataset = Dataset.from_dict({"input": [item["input"] for item in val_data]})
 
-    # Set up training arguments
-    training_args = TrainingArguments(
-        output_dir="./results",
-        num_train_epochs=3,
-        per_device_train_batch_size=4,
-        per_device_eval_batch_size=4,
-        warmup_steps=500,
-        weight_decay=0.01,
-        logging_dir="./logs",
+    tokenized_train = train_dataset.map(tokenize_function, batched=True)
+    tokenized_val = val_dataset.map(tokenize_function, batched=True)
+
+    # Convert to TensorFlow datasets
+    tf_train_dataset = model.prepare_tf_dataset(
+        tokenized_train,
+        shuffle=True,
+        batch_size=4
+    )
+    tf_val_dataset = model.prepare_tf_dataset(
+        tokenized_val,
+        shuffle=False,
+        batch_size=4
     )
 
-    # Create Trainer instance
-    trainer = Trainer(
-        model=model,
-        args=training_args,
-        train_dataset=tokenized_train,
-        eval_dataset=tokenized_val,
-    )
+    # Compile the model
+    optimizer = tf.keras.optimizers.Adam(learning_rate=5e-5)
+    model.compile(optimizer=optimizer)
 
     # Fine-tune the model
-    trainer.train()
+    model.fit(
+        tf_train_dataset,
+        validation_data=tf_val_dataset,
+        epochs=3
+    )
 
     return model, tokenizer
 
 
 if __name__ == "__main__":
     train_data, val_data, _ = prepare_data()  # Assuming prepare_data() is available
-    fine_tuned_model, tokenizer = finetune_llama(train_data, val_data)
+    fine_tuned_model, tokenizer = finetune_llama_tf(train_data, val_data)
 
     # Save the fine-tuned model
-    fine_tuned_model.save_pretrained("./fine_tuned_llama")
-    tokenizer.save_pretrained("./fine_tuned_llama")
-
-
+    fine_tuned_model.save_pretrained("./fine_tuned_llama_tf")
+    tokenizer.save_pretrained("./fine_tuned_llama_tf")
