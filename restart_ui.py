@@ -36,7 +36,7 @@ def main():
             st.success("Analysis complete!")
 
             # Display top comments
-            top_comments = get_top_comments(analyzed_df)
+            top_comments = restart_cont.get_top_comments(analyzed_df)
             st.subheader(f"Top {len(top_comments)} High-Value Comments:")
             for _, row in top_comments.iterrows():
                 with st.expander(f"Date: {row['DATETIME_DTM']} - {row['OBSRVTN_NB']}"):
