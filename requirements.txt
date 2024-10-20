@@ -3,3 +3,7 @@ flask
 pandas
 tk
 colorama
+PyPDF2
+keras
+transformers
+torch
