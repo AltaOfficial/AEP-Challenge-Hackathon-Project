@@ -12,9 +12,9 @@ def extract_pdf_text(pdf_path):
     return text
 
 
-def create_training_examples(safety_info, guidelines):
+def create_training_examples(safety_info, guidelines, vocab, precursor):
     """Create training examples based on the content of the PDFs."""
-    combined_text = safety_info + " " + guidelines
+    combined_text = safety_info + " " + guidelines + " " + vocab + " " + precursor
     sentences = combined_text.split('.')
 
     training_examples = []
@@ -49,4 +49,6 @@ def create_training_examples(safety_info, guidelines):
 # Usage
 safety_info = extract_pdf_text("data/cases.pdf")
 guidelines = extract_pdf_text("data/eeiSCLModel.pdf")
-training_data = create_training_examples(safety_info, guidelines)
+vocab = extract_pdf_text("data/vocab_and_faq.pdf")
+precursor = extract_pdf_text("data/precursor.pdf")
+training_data = create_training_examples(safety_info, guidelines, vocab, precursor)

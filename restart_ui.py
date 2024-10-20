@@ -1,24 +1,25 @@
 import restart, restart_cont
 import streamlit as st
 import pandas as pd
-from ollama_llama_interaction import load_model, train_model, analyze_comments, get_top_comments
 
 def main():
-    st.title("Safety Comment Analysis")
+    st.title("Hazard Comment Analysis")
 
     # Load the LLaMA model
-    client = load_model()
+    client = restart_cont.load_model()
 
     # Load safety info and guidelines
     safety_info = restart.extract_pdf_text("data/cases.pdf")
     guidelines = restart.extract_pdf_text("data/eeiSCLModel.pdf")
+    vocab =restart.extract_pdf_text("data/vocab_and_faq.pdf")
+    precursor = restart.extract_pdf_text("data/precursor.pdf")
 
     # Create training data
-    training_data = restart.create_training_examples(safety_info, guidelines)
+    training_data = restart.create_training_examples(safety_info, guidelines, vocab, precursor)
 
     # Train the model
     with st.spinner("Training the model on safety guidelines..."):
-        train_model(client, training_data)
+        restart_cont.train_model(client, training_data)
     st.success("Model training complete!")
 
     # File uploader
@@ -31,7 +32,7 @@ def main():
         # Analyze comments
         if st.button("Analyze Comments"):
             with st.spinner("Analyzing comments..."):
-                analyzed_df = analyze_comments(df, client, safety_info, guidelines)
+                analyzed_df = restart_cont.analyze_comments(df, client, safety_info, guidelines, vocab, precursor)
             st.success("Analysis complete!")
 
             # Display top comments

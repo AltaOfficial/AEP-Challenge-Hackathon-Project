@@ -19,7 +19,7 @@ def train_model(client, training_data):
     print("Training complete.")
 
 
-def analyze_comment(client, comment, safety_info, guidelines):
+def analyze_comment(client, comment, safety_info, guidelines, vocab, precursor):
     """Analyze a single comment using the trained LLaMA model."""
     prompt = f"""
     Safety Info: {safety_info}
@@ -45,11 +45,11 @@ def analyze_comment(client, comment, safety_info, guidelines):
     return importance, explanation
 
 
-def analyze_comments(df, client, safety_info, guidelines):
+def analyze_comments(df, client, safety_info, guidelines, vocab, precursor):
     """Analyze comments using the trained LLaMA model."""
     results = []
     for _, row in tqdm(df.iterrows(), total=len(df)):
-        importance, explanation = analyze_comment(client, row['PNT_ATRISKNOTES_TX'], safety_info, guidelines)
+        importance, explanation = analyze_comment(client, row['PNT_ATRISKNOTES_TX'], safety_info, guidelines, vocab, precursor)
         results.append((importance, explanation))
 
     df['importance'] = [r[0] for r in results]
@@ -57,7 +57,7 @@ def analyze_comments(df, client, safety_info, guidelines):
     return df
 
 
-def get_top_comments(df, n=20):
+def get_top_comments(df, n=30):
     """Get the top n high-value comments."""
     high_value_comments = df[df['importance'] == 'high-value'].sort_values('Date', ascending=False)
     return high_value_comments.head(n)
@@ -69,16 +69,18 @@ if __name__ == "__main__":
     # Load safety info and guidelines
     safety_info = restart.extract_pdf_text("data/cases.pdf")
     guidelines = restart.extract_pdf_text("data/eeiSCLModel.pdf")
+    vocab = restart.extract_pdf_text("data/vocab_and_faq.pdf")
+    precursor = restart.extract_pdf_text("data/precursor.pdf")
 
     # Create training data
-    training_data = restart.create_training_examples(safety_info, guidelines)
+    training_data = restart.create_training_examples(safety_info, guidelines, vocab, precursor)
 
     # Train the model
     train_model(client, restart.training_data)
 
     # Analyze comments
     df = pd.read_csv("data/comments.csv")
-    analyzed_df = analyze_comments(df, client, safety_info, guidelines)
+    analyzed_df = analyze_comments(df, client, safety_info, guidelines, vocab, precursor)
     top_comments = get_top_comments(analyzed_df)
 
     print(f"Top {len(top_comments)} high-value comments:")
