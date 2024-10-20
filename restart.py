@@ -23,8 +23,8 @@ def create_training_examples(safety_info, guidelines, vocab, precursor):
     for _ in range(50):  # Adjust the number of examples as needed
         sample = '. '.join(random.sample(sentences, 3))  # Combine 3 random sentences
         training_examples.append({
-            "input": f"Safety guidelines: {sample}\n\nIs the above text a high-value safety observation?",
-            "output": "Yes, this is a high-value safety observation because it directly relates to important safety guidelines and procedures."
+            "input": f"Hazard Observations: {sample}\n\nIs the above text a high-value hazard observation?",
+            "output": "Yes, this is a high-value hazard observation because it directly relates to hazardous conditions based on guidelines and procedures, and is part of the Temperature: Fire with Sustained Fuel Source high energy category"
         })
 
     # Create negative examples

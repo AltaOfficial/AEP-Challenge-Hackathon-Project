@@ -26,8 +26,8 @@ def analyze_comment(client, comment, safety_info, guidelines, vocab, precursor):
     Guidelines: {guidelines}
     Comment: {comment}
 
-    Based on the safety information and guidelines provided, is this comment a high-value safety observation? 
-    If yes, explain why it's important for safety and what high energy category it falls into. If no, briefly explain why it's not considered high-value.
+    Based on the safety information, guidelines, cases, and FAQs provided, is this comment a high-value hazard observation? 
+    If yes, explain why it's one of the most hazardous and from which high energy category it falls into.
 
     Analysis:
     """
@@ -36,30 +36,30 @@ def analyze_comment(client, comment, safety_info, guidelines, vocab, precursor):
     result = response['message']['content']
 
     if "yes" in result.lower():
-        importance = "high-value"
+        hazardous = "high-value"
         explanation = result.split("yes,", 1)[-1].strip()
     else:
-        importance = "low-value"
+        hazardous = "low-value"
         explanation = result.split("no,", 1)[-1].strip()
 
-    return importance, explanation
+    return hazardous, explanation
 
 
 def analyze_comments(df, client, safety_info, guidelines, vocab, precursor):
     """Analyze comments using the trained LLaMA model."""
     results = []
     for _, row in tqdm(df.iterrows(), total=len(df)):
-        importance, explanation = analyze_comment(client, row['PNT_ATRISKNOTES_TX'], safety_info, guidelines, vocab, precursor)
-        results.append((importance, explanation))
+        hazardous, explanation = analyze_comment(client, row['PNT_ATRISKNOTES_TX'], safety_info, guidelines, vocab, precursor)
+        results.append((hazardous, explanation))
 
-    df['importance'] = [r[0] for r in results]
+    df['hazardous'] = [r[0] for r in results]
     df['explanation'] = [r[1] for r in results]
     return df
 
 
 def get_top_comments(df, n=30):
     """Get the top n high-value comments."""
-    high_value_comments = df[df['importance'] == 'high-value'].sort_values('Obs Number', ascending=False)
+    high_value_comments = df[df['hazardous'] == 'high-value'].sort_values('Obs Number', ascending=False)
     return high_value_comments.head(n)
 
 
