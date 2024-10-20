@@ -4,7 +4,7 @@ from transformers import AutoTokenizer, AutoModelForCausalLM, TrainingArguments,
 
 def finetune_llama(train_data, val_data):
     # Load pre-trained LLaMA 3.2 model and tokenizer
-    model_name = "/llama3.2"  # Adjust as needed for LLaMA 3.2
+    model_name = "meta-llama/llama3"
     tokenizer = AutoTokenizer.from_pretrained(model_name)
     model = AutoModelForCausalLM.from_pretrained(model_name)
 
@@ -41,8 +41,8 @@ def finetune_llama(train_data, val_data):
 
 
 if __name__ == "__main__":
-    train_data, val_data, _ = prepare_data()  # Assuming prepare_data() is available
-    fine_tuned_model, tokenizer = finetune_llama(train_data, val_data)
+    aep_ai.train_data, aep_ai.val_data, _ = aep_ai.prepare_data()  # Assuming prepare_data() is available
+    fine_tuned_model, tokenizer = finetune_llama(aep_ai.train_data, aep_ai.val_data)
 
     # Save the fine-tuned model
     fine_tuned_model.save_pretrained("./fine_tuned_llama")
