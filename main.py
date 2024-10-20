@@ -34,7 +34,7 @@ if __name__ == "__main__":
     # df = pd.read_csv(hazardous_examples_file_path)
     # print(Fore.RED, df.iloc[:, 4])
     # print(Style.RESET_ALL)
-    response = ollama.chat(model="llama3.1", messages=
+    response = ollama.chat(model="llama3.1:70b", messages=
         conversation
     )
     conversation.append({"role": "assistant", "content": response["message"]["content"]})
@@ -46,7 +46,7 @@ if __name__ == "__main__":
         print("USER: ")
         user_input = input("")
         conversation.append({"role": "user", "content": user_input})
-        response = ollama.chat(model="llama3.1", messages=conversation)
+        response = ollama.chat(model="llama3.1:70b", messages=conversation)
         conversation.append({"role": "assistant", "content": response["message"]["content"]})
         print(Fore.GREEN + "ASSISTANT: \n" + response["message"]["content"] + "\n")
         print(Style.RESET_ALL)
