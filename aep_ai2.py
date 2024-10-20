@@ -6,7 +6,11 @@ from datasets import Dataset
 def finetune_llama_tf(train_data, val_data):
     """Fine-tune the LLaMA 3.2 model on the safety comment data using TensorFlow."""
     # Load pre-trained LLaMA 3.2 model and tokenizer
+<<<<<<< HEAD
     model_name = "meta-llama/Llama-2-7b-hf"  # Adjust as needed for LLaMA 3.2
+=======
+    model_name = "meta-llama/llama3"
+>>>>>>> 972643f278e01ecba45f147e40d28ba62908dff2
     tokenizer = AutoTokenizer.from_pretrained(model_name)
     model = TFAutoModelForCausalLM.from_pretrained(model_name)
 
@@ -47,8 +51,13 @@ def finetune_llama_tf(train_data, val_data):
 
 
 if __name__ == "__main__":
+<<<<<<< HEAD
     train_data, val_data, _ = prepare_data()  # Assuming prepare_data() is available
     fine_tuned_model, tokenizer = finetune_llama_tf(train_data, val_data)
+=======
+    aep_ai.train_data, aep_ai.val_data, _ = aep_ai.prepare_data()  # Assuming prepare_data() is available
+    fine_tuned_model, tokenizer = finetune_llama(aep_ai.train_data, aep_ai.val_data)
+>>>>>>> 972643f278e01ecba45f147e40d28ba62908dff2
 
     # Save the fine-tuned model
     fine_tuned_model.save_pretrained("./fine_tuned_llama_tf")

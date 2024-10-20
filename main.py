@@ -8,6 +8,7 @@ from colorama import Fore, Style
 if __name__ == "__main__":
     conversation = []
     startingInfo = """
+            The following are hazards: 
             1. Suspended load 
             2. mobile equipment/traffic with workers on foot 
             3. Heavy Rotating Equipment
@@ -22,7 +23,7 @@ if __name__ == "__main__":
             12. excavation or trench
             13. arc flash
             
-            every single message after me if it is one of those hazards
+            every message i send after classify it as one of the listed above, or if its not a hazard say n/a exactly
             """
     conversation.append({"role": "user", "content": startingInfo})
     # csv_input = input("")
